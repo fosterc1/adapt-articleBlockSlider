@@ -7,9 +7,18 @@
         "_isEnabledOnScreenSizes": "medium",
         "_hasTabs": false,
         "_hasArrows": true,
+        "_hasPagination": true,
+        "_paginationPosition": "bottom",
         "_startIndex": 0,
         "_hasUniformHeight": true,
         "_minHeight": null,
         "_enableTouchSwipe": true,
-        "_swipeSensitivity": 50
+        "_swipeSensitivity": 50,
+        "_autoplay": {
+            "_isEnabled": false,
+            "_interval": 5000,
+            "_pauseOnHover": true,
+            "_stopOnUserInteraction": true,
+            "_loop": true
+        }
     }

@@ -80,6 +80,59 @@
     flex-wrap: wrap;
     width: 100%;
   }
+
+  // Pagination Pips
+  // --------------------------------------------------
+  &__pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 15px 0;
+    margin: 0 auto;
+  }
+
+  &__pagination-pip {
+    padding: 0;
+    margin: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    
+    &:hover:not(.is-active):not(.is-disabled) {
+      opacity: 0.7;
+    }
+
+    &:focus {
+      outline: 2px solid @focus-outline;
+      outline-offset: 2px;
+    }
+
+    &.is-disabled {
+      cursor: not-allowed;
+      opacity: 0.5;
+    }
+  }
+
+  &__pagination-pip-inner {
+    display: block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background-color: @item-color;
+    opacity: 0.4;
+    transition: all 0.3s ease;
+    
+    .abs__pagination-pip.is-active & {
+      opacity: 1;
+      transform: scale(1.2);
+    }
+
+    .abs__pagination-pip.is-visited:not(.is-active) & {
+      opacity: 0.6;
+    }
+  }
 }
 
 // --------------------------------------------------
@@ -102,5 +155,24 @@
   &__btn-arrow.is-disabled {
     background-color: @disabled;
     color: @disabled-inverted;
+  }
+
+  // Pagination Pips Theme
+  // --------------------------------------------------
+  &__pagination-pip-inner {
+    background-color: @item-color;
+
+    .no-touch .abs__pagination-pip:not(.is-disabled):not(.is-active):hover & {
+      background-color: @item-color-hover;
+      opacity: 0.7;
+    }
+
+    .abs__pagination-pip.is-active & {
+      background-color: @item-color-selected;
+    }
+
+    .abs__pagination-pip.is-disabled & {
+      background-color: @disabled;
+    }
   }
 }

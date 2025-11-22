@@ -44,7 +44,9 @@
 
 ### 🎯 Core Functionality
 - **Horizontal Slider**: Transforms vertically stacked blocks into horizontal slides
-- **Multiple Navigation Modes**: Arrow buttons or tab-based navigation
+- **Multiple Navigation Modes**: Arrow buttons, tab-based navigation, or pagination pips
+- **Pagination Pips**: Visual indicator dots with direct slide navigation
+- **Autoplay**: Automatic progression through blocks with configurable timing
 - **Touch/Swipe Support**: Native gesture support for mobile and tablet devices
 - **Responsive Design**: Adaptive behavior across all screen sizes
 - **RTL Support**: Full Right-to-Left language support
@@ -63,6 +65,8 @@
 - **Uniform Heights**: Optional consistent slide heights
 - **Minimum Height**: Set container minimum height
 - **Swipe Sensitivity**: Adjustable touch gesture threshold
+- **Pagination Position**: Place pips at top or bottom of slider
+- **Autoplay Control**: Configure interval, pause on hover, loop behavior
 
 ### ♿ Accessibility Features
 - **WCAG 2.1 AA Compliant**: Meets international accessibility standards
@@ -136,6 +140,8 @@ Configure the Article Block Slider at the article level. In the Adapt Authoring 
 |---------|------|---------|-------------|
 | `_hasArrows` | Boolean | `true` | Enable arrow button navigation |
 | `_hasTabs` | Boolean | `false` | Enable tab navigation (mutually exclusive with arrows) |
+| `_hasPagination` | Boolean | `true` | Show pagination dots (pips) for direct block navigation |
+| `_paginationPosition` | String | `"bottom"` | Position of pagination pips: `"top"` or `"bottom"` |
 
 #### Touch Settings
 
@@ -143,6 +149,16 @@ Configure the Article Block Slider at the article level. In the Adapt Authoring 
 |---------|------|---------|-------------|
 | `_enableTouchSwipe` | Boolean | `true` | Enable touch/swipe gestures |
 | `_swipeSensitivity` | Number | `50` | Minimum swipe distance in pixels |
+
+#### Autoplay Settings
+
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| `_autoplay._isEnabled` | Boolean | `false` | Enable automatic block progression |
+| `_autoplay._interval` | Number | `5000` | Time between slides in milliseconds |
+| `_autoplay._pauseOnHover` | Boolean | `true` | Pause autoplay when mouse hovers over slider |
+| `_autoplay._stopOnUserInteraction` | Boolean | `true` | Stop autoplay permanently when user navigates manually |
+| `_autoplay._loop` | Boolean | `true` | Return to first slide after reaching the end |
 
 ### Example Configuration
 
@@ -156,11 +172,20 @@ Configure the Article Block Slider at the article level. In the Adapt Authoring 
     "_isEnabledOnScreenSizes": "large medium",
     "_hasTabs": false,
     "_hasArrows": true,
+    "_hasPagination": true,
+    "_paginationPosition": "bottom",
     "_startIndex": 0,
     "_hasUniformHeight": true,
     "_minHeight": null,
     "_enableTouchSwipe": true,
-    "_swipeSensitivity": 50
+    "_swipeSensitivity": 50,
+    "_autoplay": {
+      "_isEnabled": false,
+      "_interval": 5000,
+      "_pauseOnHover": true,
+      "_stopOnUserInteraction": true,
+      "_loop": true
+    }
   }
 }
 ```
@@ -204,6 +229,89 @@ The Article Block Slider provides comprehensive touch and swipe support for mobi
 - **High Sensitivity** (25-40px): Fast, responsive swiping
 - **Medium Sensitivity** (50-75px): Balanced, default setting  
 - **Low Sensitivity** (80-100px): Deliberate, prevent accidental swipes
+
+---
+
+## Pagination Pips
+
+Visual pagination indicators (pips/dots) provide an intuitive way to navigate between blocks and show the current position in the slider.
+
+### Features
+
+- **Visual Feedback**: Clearly shows current position and total number of blocks
+- **Direct Navigation**: Click/tap any pip to jump directly to that block
+- **Accessibility**: Full keyboard support and ARIA labels
+- **Positioning**: Place pips at top or bottom of slider
+- **Visual States**: Active, visited, and hover states
+- **Responsive**: Works seamlessly with arrows, tabs, and touch navigation
+
+### Configuration
+
+```json
+{
+  "_hasPagination": true,          // Show pagination pips
+  "_paginationPosition": "bottom"  // "top" or "bottom"
+}
+```
+
+### Behavior
+
+- **Active State**: Current block pip is highlighted and scaled
+- **Visited State**: Previously viewed pips show semi-transparent
+- **Keyboard Navigation**: Tab to pips, Enter/Space to activate
+- **Mouse Interaction**: Hover effects and click to navigate
+- **Touch Devices**: Touch-optimized tap targets
+
+---
+
+## Autoplay
+
+Automatically progress through blocks at configurable intervals, perfect for showcasing content or creating guided experiences.
+
+### Features
+
+- **Automatic Progression**: Slides advance without user interaction
+- **Smart Pause**: Pause on hover to let users read content
+- **User Control**: Stops permanently when user manually navigates
+- **Loop Option**: Return to start or stop at the end
+- **Smooth Transitions**: Uses existing slide animation settings
+
+### Configuration
+
+```json
+{
+  "_autoplay": {
+    "_isEnabled": false,                // Enable autoplay
+    "_interval": 5000,                  // Time between slides (ms)
+    "_pauseOnHover": true,              // Pause when mouse over
+    "_stopOnUserInteraction": true,     // Stop on manual navigation
+    "_loop": true                       // Loop back to first slide
+  }
+}
+```
+
+### Behavior
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `_interval` | Milliseconds between automatic slide changes | 5000ms (5 seconds) |
+| `_pauseOnHover` | Pauses when user hovers over slider | `true` |
+| `_stopOnUserInteraction` | Stops when user clicks arrow/tab/pip or swipes | `true` |
+| `_loop` | Returns to first slide after last, continues indefinitely | `true` |
+
+### Best Practices
+
+**Recommended Settings:**
+- **Content Reading**: 7-10 seconds per slide with complex text
+- **Image Gallery**: 3-5 seconds per slide for visual content
+- **Always Enable** `_pauseOnHover` for accessibility
+- **Consider** `_stopOnUserInteraction` to respect user control
+
+**Accessibility Considerations:**
+- Provide sufficient time for all users to read content
+- Include visible pause/play controls for user agency
+- Consider disabling autoplay when accessibility mode is active
+- Test with keyboard-only navigation
 
 ---
 

@@ -117,6 +117,72 @@
                   "inputType": "Number",
                   "validators": ["number"],
                   "help": "Minimum distance in pixels required for a swipe gesture to be recognized. Lower values make swiping more sensitive. Default is 50 pixels."
+                },
+                "_hasPagination": {
+                  "type": "boolean",
+                  "default": true,
+                  "title": "Show Pagination Pips",
+                  "inputType": "Checkbox",
+                  "validators": [],
+                  "help": "Displays pagination dots (pips) below the slider to indicate the current slide and allow direct navigation."
+                },
+                "_paginationPosition": {
+                  "type": "string",
+                  "default": "bottom",
+                  "title": "Pagination Position",
+                  "enum": ["bottom", "top"],
+                  "inputType": {
+                    "type": "Select",
+                    "options": ["bottom", "top"]
+                  },
+                  "validators": [],
+                  "help": "Position of pagination pips relative to the slider content."
+                },
+                "_autoplay": {
+                  "type": "object",
+                  "title": "Autoplay Settings",
+                  "properties": {
+                    "_isEnabled": {
+                      "type": "boolean",
+                      "default": false,
+                      "title": "Enable Autoplay",
+                      "inputType": "Checkbox",
+                      "validators": [],
+                      "help": "Automatically advances through blocks at a set interval."
+                    },
+                    "_interval": {
+                      "type": "number",
+                      "default": 5000,
+                      "title": "Autoplay Interval (ms)",
+                      "inputType": "Number",
+                      "validators": ["number"],
+                      "help": "Time in milliseconds between automatic slide changes. Default is 5000ms (5 seconds)."
+                    },
+                    "_pauseOnHover": {
+                      "type": "boolean",
+                      "default": true,
+                      "title": "Pause on Hover",
+                      "inputType": "Checkbox",
+                      "validators": [],
+                      "help": "Pauses autoplay when user hovers over the slider."
+                    },
+                    "_stopOnUserInteraction": {
+                      "type": "boolean",
+                      "default": true,
+                      "title": "Stop on User Interaction",
+                      "inputType": "Checkbox",
+                      "validators": [],
+                      "help": "Stops autoplay permanently when user manually navigates (clicks arrow, tab, or swipes)."
+                    },
+                    "_loop": {
+                      "type": "boolean",
+                      "default": true,
+                      "title": "Loop",
+                      "inputType": "Checkbox",
+                      "validators": [],
+                      "help": "When reaching the last slide, automatically return to the first slide and continue autoplay."
+                    }
+                  }
                 }
               }
             }

@@ -14,12 +14,17 @@ const BlockSliderView = {
     _touchEndY: 0,
     _isSwiping: false,
     _minSwipeDistance: 50, // Minimum distance for a swipe (in pixels)
+    _autoplayTimer: null,
+    _autoplayEnabled: false,
+    _autoplayStopped: false,
 
     events: {
       'click [data-block-slider]': '_onBlockSliderClick',
       'touchstart .js-abs-slide-container': '_onTouchStart',
       'touchmove .js-abs-slide-container': '_onTouchMove',
-      'touchend .js-abs-slide-container': '_onTouchEnd'
+      'touchend .js-abs-slide-container': '_onTouchEnd',
+      'mouseenter .abs__container': '_onAutoplayMouseEnter',
+      'mouseleave .abs__container': '_onAutoplayMouseLeave'
     },
 
     preRender() {
@@ -182,6 +187,9 @@ const BlockSliderView = {
 
       this._blockSliderMoveIndex(startIndex, false);
 
+      // Initialize autoplay if enabled
+      this._blockSliderInitializeAutoplay();
+
       Adapt.trigger(this.constructor.type + 'View:postRender', this);
 
     },
@@ -195,6 +203,83 @@ const BlockSliderView = {
         this._isReady = true;
       }, 250);
       this.$('.component').on('resize', this._blockSliderResizeHeight);
+    },
+
+    _blockSliderInitializeAutoplay() {
+      const autoplayConfig = this._blockSliderConfig._autoplay;
+      
+      if (!autoplayConfig || !autoplayConfig._isEnabled) {
+        return;
+      }
+
+      this._autoplayEnabled = true;
+      this._autoplayConfig = autoplayConfig;
+      this._autoplayStopped = false;
+
+      // Start autoplay
+      this._blockSliderStartAutoplay();
+    },
+
+    _blockSliderStartAutoplay() {
+      if (!this._autoplayEnabled || this._autoplayStopped) {
+        return;
+      }
+
+      this._blockSliderStopAutoplay();
+
+      const interval = this._autoplayConfig._interval || 5000;
+
+      this._autoplayTimer = setTimeout(() => {
+        this._blockSliderAutoplayAdvance();
+      }, interval);
+    },
+
+    _blockSliderStopAutoplay() {
+      if (this._autoplayTimer) {
+        clearTimeout(this._autoplayTimer);
+        this._autoplayTimer = null;
+      }
+    },
+
+    _blockSliderPauseAutoplay() {
+      this._blockSliderStopAutoplay();
+    },
+
+    _blockSliderResumeAutoplay() {
+      if (this._autoplayEnabled && !this._autoplayStopped) {
+        this._blockSliderStartAutoplay();
+      }
+    },
+
+    _blockSliderAutoplayAdvance() {
+      const totalBlocks = this.model.getChildren().models.filter(model => model.isTypeGroup('block')).length;
+      const currentIndex = this._currentIndex || 0;
+      let nextIndex = currentIndex + 1;
+
+      // Check if we should loop
+      if (nextIndex >= totalBlocks) {
+        if (this._autoplayConfig._loop) {
+          nextIndex = 0;
+        } else {
+          // Stop autoplay at the end if not looping
+          this._autoplayStopped = true;
+          return;
+        }
+      }
+
+      this._blockSliderMoveIndex(nextIndex, true, true);
+    },
+
+    _onAutoplayMouseEnter() {
+      if (this._autoplayConfig && this._autoplayConfig._pauseOnHover) {
+        this._blockSliderPauseAutoplay();
+      }
+    },
+
+    _onAutoplayMouseLeave() {
+      if (this._autoplayConfig && this._autoplayConfig._pauseOnHover) {
+        this._blockSliderResumeAutoplay();
+      }
     },
 
     _onBlockSliderClick(event) {
@@ -300,10 +385,17 @@ const BlockSliderView = {
       this._blockSliderMoveIndex(--index);
     },
 
-    _blockSliderMoveIndex(index, animate) {
+    _blockSliderMoveIndex(index, animate, isAutoplay) {
+      // Stop autoplay on user interaction (not autoplay initiated)
+      if (!isAutoplay && this._autoplayConfig && this._autoplayConfig._stopOnUserInteraction) {
+        this._autoplayStopped = true;
+        this._blockSliderStopAutoplay();
+      }
+
       if (this.model.get('_currentBlock') != index) {
 
         this.model.set('_currentBlock', index);
+        this._currentIndex = index;
 
         Adapt.trigger('media:stop');//in case any of the blocks contain media that's been left playing by the user
 
@@ -311,6 +403,7 @@ const BlockSliderView = {
         this._blockSliderResizeHeight(animate);
         this._blockSliderScrollToCurrent(animate);
         this._blockSliderConfigureControls(animate);
+        this._blockSliderUpdatePagination(index);
       }
 
       const duration = this._blockSliderConfig._slideAnimationDuration || 200;
@@ -321,10 +414,22 @@ const BlockSliderView = {
         _.delay(() => {
           $(window).resize();
         }, duration);
+        
+        // Restart autoplay after animation (if not stopped by user interaction)
+        if (isAutoplay) {
+          _.delay(() => {
+            this._blockSliderStartAutoplay();
+          }, duration);
+        }
         return;
       }
 
       $(window).resize();
+
+      // Restart autoplay immediately if not animating (if not stopped by user interaction)
+      if (isAutoplay) {
+        this._blockSliderStartAutoplay();
+      }
 
     },
 
@@ -563,6 +668,22 @@ const BlockSliderView = {
     _blockSliderRemoveEventListeners() {
       this.$('.component').off('resize', this._blockSliderResizeHeight);
       this.stopListening(Adapt, 'device:changed', this._onBlockSliderDeviceChanged);
+      // Clean up autoplay
+      this._blockSliderStopAutoplay();
+    },
+
+    _blockSliderUpdatePagination(index) {
+      if (!this._blockSliderConfig._hasPagination) return;
+
+      const $pips = this.$('.js-abs-pagination-pip');
+      
+      // Remove active state from all pips
+      $pips.removeClass('is-active');
+      $pips.attr('aria-current', 'false');
+      
+      // Add active state to current pip
+      $pips.eq(index).addClass('is-active');
+      $pips.eq(index).attr('aria-current', 'true');
     },
 
     // Helper function for image loading (replaces deprecated .imageready())

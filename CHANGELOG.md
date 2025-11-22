@@ -5,6 +5,66 @@ All notable changes to the Article Block Slider extension will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.4.0] - 2025-01-22
+
+### Added
+- **Pagination Pips**: Visual indicator dots for direct slide navigation
+  - Configurable position (top or bottom)
+  - Active, visited, and hover states
+  - Full keyboard and screen reader support
+  - Click/tap to jump to specific slides
+- **Autoplay Feature**: Automatic progression through blocks
+  - Configurable interval timing (default 5000ms)
+  - Pause on hover option
+  - Stop on user interaction option
+  - Loop/no-loop configuration
+  - Smart timer management with proper cleanup
+- **New Configuration Options**:
+  - `_hasPagination`: Enable/disable pagination pips (default: true)
+  - `_paginationPosition`: Position pips at "top" or "bottom" (default: "bottom")
+  - `_autoplay._isEnabled`: Enable autoplay (default: false)
+  - `_autoplay._interval`: Time between slides in ms (default: 5000)
+  - `_autoplay._pauseOnHover`: Pause on mouse hover (default: true)
+  - `_autoplay._stopOnUserInteraction`: Stop on manual navigation (default: true)
+  - `_autoplay._loop`: Loop back to first slide (default: true)
+
+### Changed
+- **Navigation System**: Enhanced to support multiple navigation types simultaneously
+  - Arrows + Pagination work together
+  - Tabs + Pagination work together (arrows disabled)
+  - Touch/Swipe + Pagination work together
+- **JavaScript**: Updated `adapt-articleView.js`
+  - Added `_blockSliderUpdatePagination()` method
+  - Updated `_blockSliderMoveIndex()` to handle autoplay and user interaction
+  - Added autoplay timer management methods
+  - Added mouse enter/leave handlers for pause on hover
+  - Enhanced cleanup in `_blockSliderRemoveEventListeners()`
+- **Template**: Updated `articleBlockSlider-article.hbs`
+  - Added pagination pip markup with ARIA labels
+  - Support for top and bottom pagination positioning
+  - Proper accessibility attributes (aria-label, aria-current)
+- **Styling**: Enhanced `articleBlockSlider-article.less`
+  - Added pagination pip base styles (flexbox layout, spacing)
+  - Added pip interaction styles (hover, focus, active, disabled)
+  - Added pip theme styling with color variables
+  - Smooth transitions and scale effects for active state
+
+### Documentation
+- **README.md**: Added comprehensive sections for new features
+  - Pagination Pips section with features, configuration, and behavior
+  - Autoplay section with features, configuration, and best practices
+  - Updated Features overview to mention pagination and autoplay
+  - Updated Configuration tables with new settings
+  - Updated Example Configuration to include new options
+  - Added accessibility considerations for autoplay
+- **example.json**: Updated with pagination and autoplay configuration examples
+- **CHANGELOG.md**: Documented all new features and changes
+
+### Improved
+- **Accessibility**: Pagination pips fully keyboard navigable with proper ARIA attributes
+- **User Experience**: Multiple navigation methods provide flexibility for different user preferences
+- **Performance**: Efficient timer management with proper cleanup to prevent memory leaks
+
 ## [4.3.0] - 2025-01-22
 
 ### Added

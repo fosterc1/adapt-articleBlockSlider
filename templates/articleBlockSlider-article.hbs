@@ -41,7 +41,23 @@
   </div>
   {{/any}}
 
-  <div class="abs__container{{#if _articleBlockSlider._hasArrows}} has-arrows{{/if}}{{#if _articleBlockSlider._hasTabs}} has-tabs{{/if}}" role="region"{{#if _accessibility._ariaRegions.articleBlockSlider}} tabindex="0" aria-label="{{_accessibility._ariaRegions.articleBlockSlider}}"{{/if}}>
+  <div class="abs__container{{#if _articleBlockSlider._hasArrows}} has-arrows{{/if}}{{#if _articleBlockSlider._hasTabs}} has-tabs{{/if}}{{#if _articleBlockSlider._hasPagination}} has-pagination{{/if}}" role="region"{{#if _accessibility._ariaRegions.articleBlockSlider}} tabindex="0" aria-label="{{_accessibility._ariaRegions.articleBlockSlider}}"{{/if}}>
+
+    {{#if _articleBlockSlider._hasPagination}}
+    {{#if (eq _articleBlockSlider._paginationPosition "top")}}
+    <div class="abs__pagination js-abs-pagination" role="navigation" aria-label="Slide navigation">
+      {{#each _itemButtons}}
+      <button class="abs__pagination-pip js-abs-pagination-pip{{#if (eq _index 0)}} is-active{{/if}}" 
+              data-block-slider="index" 
+              data-block-slider-index="{{this._index}}"
+              aria-label="Go to slide {{add _index 1}}"
+              aria-current="{{#if (eq _index 0)}}true{{else}}false{{/if}}">
+        <span class="abs__pagination-pip-inner"></span>
+      </button>
+      {{/each}}
+    </div>
+    {{/if}}
+    {{/if}}
 
     <div class="abs__slide-container js-abs-slide-container"{{#if _articleBlockSlider._minHeight}} style="min-height: {{{_articleBlockSlider._minHeight}}}px"{{/if}}>
 
@@ -50,6 +66,22 @@
       </div>
 
     </div>
+
+    {{#if _articleBlockSlider._hasPagination}}
+    {{#if (eq _articleBlockSlider._paginationPosition "bottom")}}
+    <div class="abs__pagination js-abs-pagination" role="navigation" aria-label="Slide navigation">
+      {{#each _itemButtons}}
+      <button class="abs__pagination-pip js-abs-pagination-pip{{#if (eq _index 0)}} is-active{{/if}}" 
+              data-block-slider="index" 
+              data-block-slider-index="{{this._index}}"
+              aria-label="Go to slide {{add _index 1}}"
+              aria-current="{{#if (eq _index 0)}}true{{else}}false{{/if}}">
+        <span class="abs__pagination-pip-inner"></span>
+      </button>
+      {{/each}}
+    </div>
+    {{/if}}
+    {{/if}}
 
     <div class="abs__toolbar js-abs-toolbar">
 
