@@ -1,5 +1,8 @@
 import Adapt from 'core/js/adapt';
 import AdaptArticleView from 'core/js/views/articleView';
+import a11y from 'core/js/a11y';
+import device from 'core/js/device';
+import wait from 'core/js/wait';
 
 const BlockSliderView = {
 
@@ -27,7 +30,7 @@ const BlockSliderView = {
       this._readyPromise = new Promise(resolve => {
         this.resolveQueue = resolve;
       });
-      Adapt.wait.queue(this._readyPromise);
+      wait.queue(this._readyPromise);
     },
 
     _blockSliderSetupEventListeners() {
@@ -118,28 +121,28 @@ const BlockSliderView = {
       const $right = this.$el.find("[data-block-slider='right']");
 
       if (_currentBlock === 0) {
-        Adapt.a11y.toggleEnabled($left, false);
-        Adapt.a11y.toggleEnabled($right, true);
+        a11y.toggleEnabled($left, false);
+        a11y.toggleEnabled($right, true);
       } else if (_currentBlock == _totalBlocks - 1 ) {
-        Adapt.a11y.toggleEnabled($left, true);
-        Adapt.a11y.toggleEnabled($right, false);
+        a11y.toggleEnabled($left, true);
+        a11y.toggleEnabled($right, false);
       } else {
-        Adapt.a11y.toggleEnabled($left, true);
-        Adapt.a11y.toggleEnabled($right, true);
+        a11y.toggleEnabled($left, true);
+        a11y.toggleEnabled($right, true);
       }
 
       const $indexes = this.$el.find("[data-block-slider='index']");
-      Adapt.a11y.toggleEnabled($indexes, true);
+      a11y.toggleEnabled($indexes, true);
       $indexes.removeClass('is-selected');
       const $currentIndex = $indexes.eq(_currentBlock);
-      Adapt.a11y.toggleEnabled($currentIndex, false);
+      a11y.toggleEnabled($currentIndex, false);
       $currentIndex.addClass('is-selected is-visited');
 
       const $blocks = this.$el.find('.block');
       if (!$blocks.length) return;
 
-      Adapt.a11y.toggleAccessible($blocks, false);
-      Adapt.a11y.toggleAccessible($blocks.eq(_currentBlock), true);
+      a11y.toggleAccessible($blocks, false);
+      a11y.toggleAccessible($blocks.eq(_currentBlock), true);
     },
 
     _blockSliderSetButtonLayout() {
@@ -275,7 +278,7 @@ const BlockSliderView = {
       const isEnabledOnScreenSizes = this.model.get('_articleBlockSlider')._isEnabledOnScreenSizes;
 
       const sizes = isEnabledOnScreenSizes.split(' ');
-      if (sizes.indexOf(Adapt.device.screenSize) > -1) {
+      if (sizes.indexOf(device.screenSize) > -1) {
         return true;
       }
       return false;
