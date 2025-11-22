@@ -10,7 +10,93 @@
           "type": "object"
         },
         "course": {
-          "type": "object"
+          "type": "object",
+          "properties": {
+            "_articleBlockSlider": {
+              "type": "object",
+              "legend": "Article Block Slider",
+              "properties": {
+                "_isEnabled": {
+                  "type": "boolean",
+                  "default": true,
+                  "title": "Enable Article Block Slider",
+                  "inputType": "Checkbox",
+                  "validators": [],
+                  "help": "Enable or disable the Article Block Slider extension globally for this course."
+                },
+                "_defaults": {
+                  "type": "object",
+                  "title": "Default Settings",
+                  "properties": {
+                    "_slideAnimationDuration": {
+                      "type": "number",
+                      "default": 600,
+                      "title": "Default Slide Animation Duration (ms)",
+                      "inputType": "Number",
+                      "validators": ["number"],
+                      "help": "Default slide duration in milliseconds. Can be overridden per article."
+                    },
+                    "_heightAnimationDuration": {
+                      "type": "number",
+                      "default": 300,
+                      "title": "Default Height Animation Duration (ms)",
+                      "inputType": "Number",
+                      "validators": ["number"],
+                      "help": "Default height animation duration in milliseconds. Can be overridden per article."
+                    },
+                    "_isEnabledOnScreenSizes": {
+                      "type": "string",
+                      "default": "large medium",
+                      "title": "Default Enabled Screen Sizes",
+                      "inputType": "Text",
+                      "validators": [],
+                      "help": "Default screen sizes: 'large', 'medium', 'small' or combinations (e.g., 'large medium'). Can be overridden per article."
+                    },
+                    "_hasArrows": {
+                      "type": "boolean",
+                      "default": true,
+                      "title": "Default: Has Arrows",
+                      "inputType": "Checkbox",
+                      "validators": [],
+                      "help": "Enable arrow navigation by default. Can be overridden per article."
+                    },
+                    "_hasTabs": {
+                      "type": "boolean",
+                      "default": false,
+                      "title": "Default: Has Tabs",
+                      "inputType": "Checkbox",
+                      "validators": [],
+                      "help": "Enable tab navigation by default. Can be overridden per article."
+                    },
+                    "_hasUniformHeight": {
+                      "type": "boolean",
+                      "default": true,
+                      "title": "Default: Uniform Height",
+                      "inputType": "Checkbox",
+                      "validators": [],
+                      "help": "Use uniform height for all blocks by default. Can be overridden per article."
+                    },
+                    "_enableTouchSwipe": {
+                      "type": "boolean",
+                      "default": true,
+                      "title": "Default: Enable Touch/Swipe",
+                      "inputType": "Checkbox",
+                      "validators": [],
+                      "help": "Enable touch/swipe navigation by default. Can be overridden per article."
+                    },
+                    "_swipeSensitivity": {
+                      "type": "number",
+                      "default": 50,
+                      "title": "Default: Swipe Sensitivity (pixels)",
+                      "inputType": "Number",
+                      "validators": ["number"],
+                      "help": "Default minimum swipe distance in pixels. Can be overridden per article."
+                    }
+                  }
+                }
+              }
+            }
+          }
         },
         "contentobject": {
           "type": "object"

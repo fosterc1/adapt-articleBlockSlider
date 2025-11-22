@@ -1,10 +1,25 @@
-    // articles.json
+    // course.json - Global defaults for all articles
+    "_articleBlockSlider": {
+        "_isEnabled": true,
+        "_defaults": {
+            "_slideAnimationDuration": 600,
+            "_heightAnimationDuration": 300,
+            "_isEnabledOnScreenSizes": "large medium",
+            "_hasTabs": false,
+            "_hasArrows": true,
+            "_hasUniformHeight": true,
+            "_enableTouchSwipe": true,
+            "_swipeSensitivity": 50
+        }
+    }
+
+    // articles.json - Article-specific overrides (all optional)
     "_articleBlockSlider": {
         "_isEnabled": true,
         "_isDisabledWhenAccessibilityActive": false,
-        "_slideAnimationDuration": 600,
+        "_slideAnimationDuration": 600,  // Overrides course default
         "_heightAnimationDuration": 300,
-        "_isEnabledOnScreenSizes": "medium",
+        "_isEnabledOnScreenSizes": "medium",  // Overrides course default
         "_hasTabs": false,
         "_hasArrows": true,
         "_startIndex": 0,
