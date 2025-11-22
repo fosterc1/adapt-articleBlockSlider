@@ -1,18 +1,19 @@
-define([
-  'core/js/adapt',
-  'core/js/views/articleView'
-], function(Adapt, AdaptArticleView) {
+import Adapt from 'core/js/adapt';
+import AdaptArticleView from 'core/js/views/articleView';
+import a11y from 'core/js/a11y';
+import device from 'core/js/device';
+import wait from 'core/js/wait';
 
-  var BlockSliderView = {
+const BlockSliderView = {
 
     _isReady: false,
     _disableAnimationOnce: false,
 
     events: {
-      "click [data-block-slider]": "_onBlockSliderClick"
+      'click [data-block-slider]': '_onBlockSliderClick'
     },
 
-    preRender: function() {
+    preRender() {
       AdaptArticleView.prototype.preRender.call(this);
 
       if (!this.model.isBlockSliderEnabled()) {
@@ -23,34 +24,36 @@ define([
       this._blockSliderPreRender();
     },
 
-    _blockSliderPreRender: function() {
-      Adapt.wait.for(function(done){
-        this.resolveQueue = done;
-      }.bind(this));
+    _blockSliderPreRender() {
       this._blockSliderSetupEventListeners();
+      // Create a promise that will be resolved when ready
+      this._readyPromise = new Promise(resolve => {
+        this.resolveQueue = resolve;
+      });
+      wait.queue(this._readyPromise);
     },
 
-    _blockSliderSetupEventListeners: function() {
+    _blockSliderSetupEventListeners() {
 
       this._blockSliderResizeHeight = this._blockSliderResizeHeight.bind(this);
 
       this.listenTo(Adapt, {
-        "device:resize": this._onBlockSliderResize,
-        "device:changed": this._onBlockSliderDeviceChanged,
-        "page:scrollTo": this._onBlockSliderPageScrollTo,
-        "page:scrolledTo": this._onBlockSliderPageScrolledTo
+        'device:resize': this._onBlockSliderResize,
+        'device:changed': this._onBlockSliderDeviceChanged,
+        'page:scrollTo': this._onBlockSliderPageScrollTo,
+        'page:scrolledTo': this._onBlockSliderPageScrolledTo
       });
 
-      this.listenToOnce(Adapt, "remove", this._onBlockSliderRemove);
-      this.listenToOnce(this.model, "change:_isReady", this._onBlockSliderReady);
+      this.listenToOnce(Adapt, 'remove', this._onBlockSliderRemove);
+      this.listenToOnce(this.model, 'change:_isReady', this._onBlockSliderReady);
 
-      var duration = this.model.get("_articleBlockSlider")._slideAnimationDuration || 200;
+      const duration = this.model.get('_articleBlockSlider')._slideAnimationDuration || 200;
 
       this._blockSliderHideOthers = _.debounce(this._blockSliderHideOthers.bind(this), duration);
 
     },
 
-    render: function() {
+    render() {
 
       if (this.model.isBlockSliderEnabled()) {
 
@@ -60,13 +63,13 @@ define([
 
     },
 
-    _blockSliderRender: function() {
+    _blockSliderRender() {
       Adapt.trigger(this.constructor.type + 'View:preRender view:render', this);
 
       this._blockSliderConfigureVariables();
 
-      var data = this.model.toJSON();
-      var template = Handlebars.templates['articleBlockSlider-article'];
+      const data = this.model.toJSON();
+      const template = Handlebars.templates['articleBlockSlider-article'];
       this.$el.html(template(data));
 
       Adapt.trigger(this.constructor.type + 'View:render', this);
@@ -77,21 +80,22 @@ define([
 
       this.delegateEvents();
 
-      this.$el.imageready(function() {
+      // Wait for images to load using modern Promise-based approach
+      this.onImagesReady().then(() => {
         _.delay(this._blockSliderPostRender.bind(this), 500);
-      }.bind(this));
+      });
 
       return this;
     },
 
-    _blockSliderConfigureVariables: function() {
-      var blocks = this.model.getChildren().models.filter(model => model.isTypeGroup('block'));
-      var totalBlocks = blocks.length;
-      var itemButtons = [];
+    _blockSliderConfigureVariables() {
+      const blocks = this.model.getChildren().models.filter(model => model.isTypeGroup('block'));
+      const totalBlocks = blocks.length;
+      const itemButtons = [];
 
-      for (var i = 0, l = totalBlocks; i < l; i++) {
+      for (let i = 0, l = totalBlocks; i < l; i++) {
         itemButtons.push({
-          _className: (i === 0 ? "home" : "not-home") + (" i"+i),
+          _className: (i === 0 ? 'home' : 'not-home') + (' i'+i),
           _index: i,
           _includeNumber: i !== 0,
           _title: blocks[i].get('title')
@@ -105,52 +109,56 @@ define([
       });
     },
 
-    _blockSliderConfigureControls: function() {
+    _blockSliderConfigureControls(animate) {
 
-      var duration = this.model.get("_articleBlockSlider")._slideAnimationDuration || 200;
+      const duration = this.model.get('_articleBlockSlider')._slideAnimationDuration || 200;
 
       if (this._disableAnimationOnce) animate = false;
-      var _currentBlock = this.model.get("_currentBlock");
-      var _totalBlocks = this.model.get("_totalBlocks");
+      const _currentBlock = this.model.get('_currentBlock');
+      const _totalBlocks = this.model.get('_totalBlocks');
 
-      var $left = this.$el.find("[data-block-slider='left']");
-      var $right = this.$el.find("[data-block-slider='right']");
+      const $left = this.$el.find("[data-block-slider='left']");
+      const $right = this.$el.find("[data-block-slider='right']");
 
       if (_currentBlock === 0) {
-        $left.a11y_cntrl_enabled(false);
-        $right.a11y_cntrl_enabled(true);
+        a11y.toggleEnabled($left, false);
+        a11y.toggleEnabled($right, true);
       } else if (_currentBlock == _totalBlocks - 1 ) {
-        $left.a11y_cntrl_enabled(true);
-        $right.a11y_cntrl_enabled(false);
+        a11y.toggleEnabled($left, true);
+        a11y.toggleEnabled($right, false);
       } else {
-        $left.a11y_cntrl_enabled(true);
-        $right.a11y_cntrl_enabled(true);
+        a11y.toggleEnabled($left, true);
+        a11y.toggleEnabled($right, true);
       }
 
-      var $indexes = this.$el.find("[data-block-slider='index']");
-      $indexes.a11y_cntrl_enabled(true).removeClass("is-selected");
-      $indexes.eq(_currentBlock).a11y_cntrl_enabled(false).addClass("is-selected is-visited");
+      const $indexes = this.$el.find("[data-block-slider='index']");
+      a11y.toggleEnabled($indexes, true);
+      $indexes.removeClass('is-selected');
+      const $currentIndex = $indexes.eq(_currentBlock);
+      a11y.toggleEnabled($currentIndex, false);
+      $currentIndex.addClass('is-selected is-visited');
 
-      var $blocks = this.$el.find(".block");
+      const $blocks = this.$el.find('.block');
       if (!$blocks.length) return;
 
-      $blocks.a11y_on(false).eq(_currentBlock).a11y_on(true);
+      a11y.toggleAccessible($blocks, false);
+      a11y.toggleAccessible($blocks.eq(_currentBlock), true);
     },
 
-    _blockSliderSetButtonLayout: function() {
-      var buttonsLength = this.model.get('_itemButtons').length;
-      var itemwidth = 100 / buttonsLength;
+    _blockSliderSetButtonLayout() {
+      const buttonsLength = this.model.get('_itemButtons').length;
+      const itemwidth = 100 / buttonsLength;
       this.$('.js-abs-btn-tab').css({
         width: itemwidth + '%'
       });
     },
 
-    _blockSliderPostRender: function() {
+    _blockSliderPostRender() {
       this._blockSliderConfigureControls(false);
 
       this._onBlockSliderDeviceChanged();
 
-      var startIndex = this.model.get("_articleBlockSlider")._startIndex || 0;
+      const startIndex = this.model.get('_articleBlockSlider')._startIndex || 0;
 
       this._blockSliderMoveIndex(startIndex, false);
 
@@ -158,48 +166,48 @@ define([
 
     },
 
-    _onBlockSliderReady: function() {
+    _onBlockSliderReady() {
       this._blockSliderHideOthers();
-      _.delay(function(){
+      _.delay(() => {
         this._blockSliderConfigureControls(false);
         this._onBlockSliderResize();
         this.resolveQueue();
         this._isReady = true;
-      }.bind(this), 250);
-      this.$(".component").on("resize", this._blockSliderResizeHeight);
+      }, 250);
+      this.$('.component').on('resize', this._blockSliderResizeHeight);
     },
 
-    _onBlockSliderClick: function(event) {
+    _onBlockSliderClick(event) {
       event.preventDefault();
 
-      var id = $(event.currentTarget).attr("data-block-slider");
+      const id = $(event.currentTarget).attr('data-block-slider');
 
       switch(id) {
-        case "left":
+        case 'left':
           this._blockSliderMoveLeft();
           break;
-        case "index":
-          var index = parseInt($(event.currentTarget).attr("data-block-slider-index"));
+        case 'index':
+          const index = parseInt($(event.currentTarget).attr('data-block-slider-index'));
           this._blockSliderMoveIndex(index);
           break;
-        case "right":
+        case 'right':
           this._blockSliderMoveRight();
           break;
       }
 
     },
 
-    _blockSliderMoveLeft: function() {
-      if (this.model.get("_currentBlock") === 0) return;
+    _blockSliderMoveLeft() {
+      if (this.model.get('_currentBlock') === 0) return;
 
-      var index = this.model.get("_currentBlock");
+      let index = this.model.get('_currentBlock');
       this._blockSliderMoveIndex(--index);
     },
 
-    _blockSliderMoveIndex: function(index, animate) {
-      if (this.model.get("_currentBlock") != index) {
+    _blockSliderMoveIndex(index, animate) {
+      if (this.model.get('_currentBlock') != index) {
 
-        this.model.set("_currentBlock", index);
+        this.model.set('_currentBlock', index);
 
         Adapt.trigger('media:stop');//in case any of the blocks contain media that's been left playing by the user
 
@@ -209,12 +217,12 @@ define([
         this._blockSliderConfigureControls(animate);
       }
 
-      var duration = this.model.get("_articleBlockSlider")._slideAnimationDuration || 200;
+      const duration = this.model.get('_articleBlockSlider')._slideAnimationDuration || 200;
 
       if (this._disableAnimationOnce) animate = false;
 
       if (animate !== false) {
-        _.delay(function() {
+        _.delay(() => {
           $(window).resize();
         }, duration);
         return;
@@ -224,145 +232,146 @@ define([
 
     },
 
-    _blockSliderMoveRight: function() {
-      if (this.model.get("_currentBlock") == this.model.get("_totalBlocks") - 1 ) return;
+    _blockSliderMoveRight() {
+      if (this.model.get('_currentBlock') == this.model.get('_totalBlocks') - 1 ) return;
 
-      var index = this.model.get("_currentBlock");
+      let index = this.model.get('_currentBlock');
       this._blockSliderMoveIndex(++index);
     },
 
-    _blockSliderScrollToCurrent: function(animate) {
-      var isEnabled = this._blockSliderIsEnabledOnScreenSizes();
-      var $container = this.$el.find(".js-abs-slide-container");
+    _blockSliderScrollToCurrent(animate) {
+      const isEnabled = this._blockSliderIsEnabledOnScreenSizes();
+      const $container = this.$el.find('.js-abs-slide-container');
 
       if (!isEnabled) {
         return $container.scrollLeft(0);
       }
 
-      var blocks = this.$el.find(".block");
-      var blockWidth = $(blocks[0]).outerWidth();
-      var lastIndex = blocks.length - 1;
-      var currentBlock = this.model.get('_currentBlock');
-      var isRTL = Adapt.config.get('_defaultDirection') === 'rtl';
-      var totalLeft = isRTL ? (lastIndex - currentBlock) * blockWidth : currentBlock * blockWidth;
+      const blocks = this.$el.find('.block');
+      const blockWidth = $(blocks[0]).outerWidth();
+      const lastIndex = blocks.length - 1;
+      const currentBlock = this.model.get('_currentBlock');
+      const isRTL = Adapt.config.get('_defaultDirection') === 'rtl';
+      const totalLeft = isRTL ? (lastIndex - currentBlock) * blockWidth : currentBlock * blockWidth;
 
       this._blockSliderShowAll();
 
-      var duration = this.model.get('_articleBlockSlider')._slideAnimationDuration || 200;
+      const duration = this.model.get('_articleBlockSlider')._slideAnimationDuration || 200;
 
       if (this._disableAnimationOnce) animate = false;
 
       if (animate === false) {
-        _.defer(function(){
+        _.defer(() => {
           $container.scrollLeft(totalLeft);
           this._blockSliderHideOthers();
-        }.bind(this));
+        });
         return;
       }
 
-      $container.stop(true).animate({scrollLeft: totalLeft}, duration, function() {
+      $container.stop(true).animate({scrollLeft: totalLeft}, duration, () => {
         $container.scrollLeft(totalLeft);
         this._blockSliderHideOthers();
-      }.bind(this));
+      });
     },
 
-    _blockSliderIsEnabledOnScreenSizes: function() {
-      var isEnabledOnScreenSizes = this.model.get("_articleBlockSlider")._isEnabledOnScreenSizes;
+    _blockSliderIsEnabledOnScreenSizes() {
+      const isEnabledOnScreenSizes = this.model.get('_articleBlockSlider')._isEnabledOnScreenSizes;
 
-      var sizes = isEnabledOnScreenSizes.split(" ");
-      if (sizes.indexOf(Adapt.device.screenSize) > -1) {
+      const sizes = isEnabledOnScreenSizes.split(' ');
+      if (sizes.indexOf(device.screenSize) > -1) {
         return true;
       }
       return false;
     },
 
-    _blockSliderShowAll: function() {
+    _blockSliderShowAll() {
       this._blockSliderHideOthers.cancel();
 
-      this.model.getChildren().models.filter(model => model.isTypeGroup('block')).forEach(function(block) {
+      this.model.getChildren().models.filter(model => model.isTypeGroup('block')).forEach(block => {
         this._blockSliderSetVisible(block, true);
-      }.bind(this));
+      });
     },
 
-    _blockSliderHideOthers: function() {
-      var currentIndex = this.model.get('_currentBlock');
-      this.model.getChildren().models.filter(model => model.isTypeGroup('block')).forEach(function(block, index) {
-        var makeVisible = (index === currentIndex);
+    _blockSliderHideOthers() {
+      const currentIndex = this.model.get('_currentBlock');
+      this.model.getChildren().models.filter(model => model.isTypeGroup('block')).forEach((block, index) => {
+        const makeVisible = (index === currentIndex);
         this._blockSliderSetVisible(block, makeVisible);
-      }.bind(this));
+      });
     },
 
-    _blockSliderSetVisible: function(model, makeVisible) {
-      this.$el.find("." + model.get('_id') + " *").css("visibility", makeVisible ? "" : "hidden");
+    _blockSliderSetVisible(model, makeVisible) {
+      this.$el.find('.' + model.get('_id') + ' *').css('visibility', makeVisible ? '' : 'hidden');
     },
 
-    _onBlockSliderResize: function() {
+    _onBlockSliderResize() {
       this._blockSliderResizeWidth(false);
       this._blockSliderResizeHeight(false);
       this._blockSliderScrollToCurrent(false);
       this._blockSliderResizeTab();
     },
 
-    _blockSliderResizeHeight: function(animate) {
+    _blockSliderResizeHeight(animate) {
       if (!this._isReady) animate = false;
-      var $container = this.$el.find(".js-abs-slide-container");
-      var isEnabled = this._blockSliderIsEnabledOnScreenSizes();
+      const $container = this.$el.find('.js-abs-slide-container');
+      const isEnabled = this._blockSliderIsEnabledOnScreenSizes();
 
       if (!isEnabled) {
         this._blockSliderShowAll();
-        return $container.velocity("stop").css({"height": "", "min-height": ""});
+        // Use CSS transitions instead of velocity
+        return $container.css({'height': '', 'min-height': ''});
       }
 
-      var currentBlock = this.model.get("_currentBlock");
-      var $blocks = this.$el.find(".block");
+      const currentBlock = this.model.get('_currentBlock');
+      const $blocks = this.$el.find('.block');
 
-      var currentHeight = $container.height();
-      var blockHeight = $blocks.eq(currentBlock).height();
+      const currentHeight = $container.height();
+      const blockHeight = $blocks.eq(currentBlock).height();
 
-      var maxHeight = -1;
-      $container.find(".block").each(function() {
+      let maxHeight = -1;
+      $container.find('.block').each(function() {
         if ($(this).height() > maxHeight) {
           maxHeight = $(this).height();
         }
       });
 
-      var duration = (this.model.get("_articleBlockSlider")._heightAnimationDuration || 200) * 2;
+      const duration = (this.model.get('_articleBlockSlider')._heightAnimationDuration || 200) * 2;
 
       if (this._disableAnimationOnce) animate = false;
 
-      if (this.model.get("_articleBlockSlider")._hasUniformHeight) {
+      if (this.model.get('_articleBlockSlider')._hasUniformHeight) {
         if (animate === false) {
-          $container.css({"height": maxHeight+"px"});
+          $container.css({'height': maxHeight+'px', 'transition': 'none'});
         } else {
-          $container.velocity("stop").velocity({"height": maxHeight+"px"}, {duration: duration });//, easing: "ease-in"});
+          $container.css({'height': maxHeight+'px', 'transition': `height ${duration}ms ease-in`});
         }
       } else if (currentHeight <= blockHeight) {
 
         if (animate === false) {
-          $container.css({"height": blockHeight+"px"});
+          $container.css({'height': blockHeight+'px', 'transition': 'none'});
         } else {
-          $container.velocity("stop").velocity({"height": blockHeight+"px"}, {duration: duration });//, easing: "ease-in"});
+          $container.css({'height': blockHeight+'px', 'transition': `height ${duration}ms ease-in`});
         }
 
       } else if (currentHeight > blockHeight) {
 
         if (animate === false) {
-          $container.css({"height": blockHeight+"px"});
+          $container.css({'height': blockHeight+'px', 'transition': 'none'});
         } else {
-          $container.velocity("stop").velocity({"height": blockHeight+"px"}, {duration: duration });//, easing: "ease-in"});
+          $container.css({'height': blockHeight+'px', 'transition': `height ${duration}ms ease-in`});
         }
 
       }
 
-      var minHeight = this.model.get("_articleBlockSlider")._minHeight;
+      const minHeight = this.model.get('_articleBlockSlider')._minHeight;
       if (minHeight) {
-        $container.css({"min-height": minHeight+"px"});
+        $container.css({'min-height': minHeight+'px'});
       }
 
     },
 
-    _blockSliderResizeTab: function() {
-      if (!this.model.get("_articleBlockSlider")._hasTabs) return;
+    _blockSliderResizeTab() {
+      if (!this.model.get('_articleBlockSlider')._hasTabs) return;
 
       this._blockSliderSetButtonLayout();
 
@@ -370,58 +379,58 @@ define([
         height: ""
       });
 
-      var parentHeight = this.$('.js-abs-btn-tab').parent().height();
+      const parentHeight = this.$('.js-abs-btn-tab').parent().height();
       this.$('.js-abs-btn-tab').css({
         height: parentHeight + 'px'
       });
 
-      var toolbarHeight = this.$('.js-abs-btn-tab-container').height();
-      var additionalMargin = '30';
+      const toolbarHeight = this.$('.js-abs-btn-tab-container').height();
+      const additionalMargin = '30';
       this.$('.js-abs-btn-tab-container').css({
         top: '-' + (toolbarHeight + (additionalMargin/2)) + 'px'
       });
 
-      var toolbarMargin = parseFloat(toolbarHeight) + parseFloat(additionalMargin);
+      const toolbarMargin = parseFloat(toolbarHeight) + parseFloat(additionalMargin);
       this.$('.js-abs-slide-container').css({
         marginTop: toolbarMargin + 'px'
       });
     },
 
-    _blockSliderResizeWidth: function() {
-      var isEnabled = this._blockSliderIsEnabledOnScreenSizes();
-      var $blockContainer = this.$el.find(".js-abs-block-container");
-      var $blocks = this.$el.find(".block");
+    _blockSliderResizeWidth() {
+      const isEnabled = this._blockSliderIsEnabledOnScreenSizes();
+      const $blockContainer = this.$el.find('.js-abs-block-container');
+      const $blocks = this.$el.find('.block');
 
       if (!isEnabled) {
-        $blocks.css("width", "");
-        return $blockContainer.css({"width": "100%"});
+        $blocks.css('width', '');
+        return $blockContainer.css({'width': '100%'});
       }
 
-      var $container = this.$el.find(".js-abs-slide-container");
+      const $container = this.$el.find('.js-abs-slide-container');
 
-      $blocks.css("width", $container.width()+"px");
+      $blocks.css('width', $container.width()+'px');
 
-      var blockWidth = $($blocks[0]).outerWidth();
-      var totalWidth = $blocks.length * (blockWidth);
+      const blockWidth = $($blocks[0]).outerWidth();
+      const totalWidth = $blocks.length * (blockWidth);
 
-      $blockContainer.width(totalWidth + "px");
+      $blockContainer.width(totalWidth + 'px');
 
     },
 
-    _onBlockSliderDeviceChanged: function() {
-      var showToolbar = this._blockSliderIsEnabledOnScreenSizes();
+    _onBlockSliderDeviceChanged() {
+      const showToolbar = this._blockSliderIsEnabledOnScreenSizes();
       this.$('.js-abs-toolbar, .js-abs-toolbar-bottom').toggleClass('u-display-none', !showToolbar);
 
-      _.delay(function() {
+      _.delay(() => {
         $(window).resize();
       }, 250);
     },
 
-    _onBlockSliderPageScrollTo: function(selector) {
+    _onBlockSliderPageScrollTo(selector) {
       this._disableAnimationOnce = true;
-      _.defer(function() {
+      _.defer(() => {
         this._disableAnimationOnce = false;
-      }.bind(this));
+      });
 
       if (typeof selector === "object") selector = selector.selector;
 
@@ -431,12 +440,12 @@ define([
 
       if (this.$el.find(selector).length === 0) return;
 
-      var id = selector.substr(1);
+      const id = selector.substr(1);
 
-      var model = Adapt.findById(id);
+      const model = Adapt.findById(id);
       if (!model) return;
 
-      var block = model.get('_type') === 'block' ? model : model.findAncestor('blocks');
+      const block = model.get('_type') === 'block' ? model : model.findAncestor('blocks');
       if (!block) return;
       this.model.getChildren().models.filter(model => model.isTypeGroup('block')).find((item, index) => {
         if (item.get('_id') !== block.get('_id')) return;
@@ -445,22 +454,47 @@ define([
       });
     },
 
-    _onBlockSliderPageScrolledTo: function() {
-      _.defer(function() {
+    _onBlockSliderPageScrolledTo() {
+      _.defer(() => {
         this._blockSliderScrollToCurrent(false);
-      }.bind(this));
+      });
     },
 
-    _onBlockSliderRemove: function() {
+    _onBlockSliderRemove() {
       this._blockSliderRemoveEventListeners();
     },
 
-    _blockSliderRemoveEventListeners: function() {
-      this.$(".component").off("resize", this._blockSliderResizeHeight);
-      this.stopListening(Adapt, "device:changed", this._onBlockSliderDeviceChanged);
+    _blockSliderRemoveEventListeners() {
+      this.$('.component').off('resize', this._blockSliderResizeHeight);
+      this.stopListening(Adapt, 'device:changed', this._onBlockSliderDeviceChanged);
+    },
+
+    // Helper function for image loading (replaces deprecated .imageready())
+    onImagesReady() {
+      return new Promise(resolve => {
+        const images = this.$('img').toArray();
+        if (images.length === 0) {
+          resolve();
+          return;
+        }
+
+        let loadedCount = 0;
+        const checkComplete = () => {
+          loadedCount++;
+          if (loadedCount === images.length) {
+            resolve();
+          }
+        };
+
+        images.forEach(img => {
+          if (img.complete) {
+            checkComplete();
+          } else {
+            $(img).on('load error', checkComplete);
+          }
+        });
+      });
     }
   };
 
-  return BlockSliderView;
-
-});
+  export default BlockSliderView;

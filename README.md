@@ -49,9 +49,33 @@ Only one navigation element (Arrows or Tabs) should be active at any one time.
 The **Article Block Slider** and **Quicknav** extensions don't interact well together when the **Article Block Slider** is the last article on a page with an enabled **Quicknav.**  
 
 ----------------------------
-**Version number:**  3.1.1  
-**Framework versions:**  >=5.10  
+**Version number:**  4.0.1  
+**Framework versions:**  >=5.53.5  
 **Author / maintainer:** Kineo  
 **Accessibility support:** WAI AA  
-**RTL support:** No  
-**Cross-platform coverage:** To be confirmed  
+**RTL support:** Partial (RTL scrolling supported)  
+**Cross-platform coverage:** Chrome, Firefox, Safari, Edge
+
+## Version 4.0.1 Changes
+
+- **Fixed**: Replaced deprecated `Adapt` namespace accessors with direct module imports
+  - `Adapt.wait` → direct `wait` import from `core/js/wait`
+  - `Adapt.a11y` → direct `a11y` import from `core/js/a11y`
+  - `Adapt.device` → direct `device` import from `core/js/device`
+- **Improved**: Eliminates console warnings about deprecated API usage
+
+## Version 4.0.0 Changes
+
+This version has been completely refactored for Adapt Framework v5.53.5 compatibility:
+
+- **ES6 Modules**: Converted from AMD/RequireJS to ES6 module syntax
+- **Modern APIs**: Replaced deprecated APIs with current Adapt v5 equivalents:
+  - `Adapt.accessibility.isActive()` → `Adapt.a11y.isEnabled()`
+  - `.a11y_cntrl_enabled()` → `Adapt.a11y.toggleEnabled()`
+  - `.a11y_on()` → `Adapt.a11y.toggleAccessible()`
+  - `.imageready()` → Promise-based image loading
+  - `.velocity()` → CSS transitions
+  - `Adapt.wait.for()` → `Adapt.wait.queue()` with Promises
+- **Modern JavaScript**: ES6+ syntax (const/let, arrow functions, template literals)
+- **Improved Schema**: Updated to JSON Schema draft-04
+- **Package.json**: Added npm package support  

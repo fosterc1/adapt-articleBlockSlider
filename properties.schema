@@ -1,12 +1,10 @@
 {
   "type": "object",
-  "$schema": "http://json-schema.org/draft-03/schema",
-  "id": "http://jsonschema.net",
-  "required": false,
+  "$schema": "http://json-schema.org/draft-04/schema",
+  "$id": "http://jsonschema.net",
   "properties": {
     "pluginLocations": {
       "type": "object",
-      "required": true,
       "properties": {
         "config": {
           "type": "object"
@@ -22,19 +20,17 @@
           "properties": {
             "_articleBlockSlider": {
               "type": "object",
-              "required": false,
-              "legend": "BlockSlider",
+              "title": "Article Block Slider",
               "properties": {
                 "_isEnabled": {
                   "type": "boolean",
-                  "required": true,
+                  "default": true,
                   "title": "Enabled",
                   "inputType": "Checkbox",
                   "validators": []
                 },
                 "_isDisabledWhenAccessibilityActive": {
                   "type": "boolean",
-                  "required": false,
                   "default": false,
                   "title": "Disable when accessibility is active?",
                   "inputType": "Checkbox",
@@ -43,7 +39,6 @@
                 },
                 "_slideAnimationDuration": {
                   "type": "number",
-                  "required": false,
                   "default": 600,
                   "title": "Slide Animation Duration",
                   "inputType": "Number",
@@ -52,7 +47,6 @@
                 },
                 "_heightAnimationDuration": {
                   "type": "number",
-                  "required": false,
                   "default": 300,
                   "title": "Height Animation Duration",
                   "inputType": "Number",
@@ -61,16 +55,14 @@
                 },
                 "_isEnabledOnScreenSizes": {
                   "type": "string",
-                  "required": false,
-                  "default": "medium",
+                  "default": "large medium",
                   "title": "Enabled On Screen Sizes",
                   "inputType": "Text",
                   "validators": [],
-                  "help": "Defines which screen sizes the Article Block Slider displays the navigation elements on. Acceptable values are large, medium and small - or a comma-separated list of combinations thereof e.g. 'large medium'."
+                  "help": "Defines which screen sizes the Article Block Slider displays the navigation elements on. Acceptable values are large, medium and small - or a space-separated list of combinations thereof e.g. 'large medium'."
                 },
                 "_hasTabs": {
                   "type": "boolean",
-                  "required": true,
                   "default": false,
                   "title": "Has Tabs",
                   "inputType": "Checkbox",
@@ -79,7 +71,6 @@
                 },
                 "_hasArrows": {
                   "type": "boolean",
-                  "required": true,
                   "default": true,
                   "title": "Has Arrows",
                   "inputType": "Checkbox",
@@ -88,7 +79,6 @@
                 },
                 "_startIndex": {
                   "type": "number",
-                  "required": true,
                   "default": 0,
                   "title": "Start on what block",
                   "inputType": "Number",
@@ -97,7 +87,6 @@
                 },
                 "_hasUniformHeight": {
                   "type": "boolean",
-                  "required": true,
                   "default": true,
                   "title": "Has a uniform height",
                   "inputType": "Checkbox",
@@ -106,7 +95,6 @@
                 },
                 "_minHeight": {
                   "type": "number",
-                  "required": false,
                   "default": null,
                   "title": "Min Height",
                   "inputType": "Number",

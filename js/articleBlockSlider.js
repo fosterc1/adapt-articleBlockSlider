@@ -1,6 +1,2 @@
-define([
-  'core/js/adapt',
-  './adapt-articleExtension'
-], function(Adapt) {
-
-});
+import Adapt from 'core/js/adapt';
+import './adapt-articleExtension';
