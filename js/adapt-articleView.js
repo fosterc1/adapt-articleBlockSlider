@@ -44,10 +44,13 @@ const BlockSliderView = {
     },
 
     _blockSliderSetupTouchConfiguration() {
-      const config = this.model.get('_articleBlockSlider');
-      // Set swipe sensitivity from config, or use default
+      // Get merged config (article settings with course defaults as fallback)
+      const config = this.model.getBlockSliderConfig ? this.model.getBlockSliderConfig() : this.model.get('_articleBlockSlider');
+      // Store merged config for use throughout the view
+      this._blockSliderConfig = config;
+      // Set swipe sensitivity from merged config
       this._minSwipeDistance = config._swipeSensitivity || 50;
-      // Check if touch/swipe is enabled (default to true for backward compatibility)
+      // Check if touch/swipe is enabled
       this._enableTouchSwipe = config._enableTouchSwipe !== false;
     },
 
@@ -65,9 +68,8 @@ const BlockSliderView = {
       this.listenToOnce(Adapt, 'remove', this._onBlockSliderRemove);
       this.listenToOnce(this.model, 'change:_isReady', this._onBlockSliderReady);
 
-      const duration = this.model.get('_articleBlockSlider')._slideAnimationDuration || 200;
-
-      this._blockSliderHideOthers = _.debounce(this._blockSliderHideOthers.bind(this), duration);
+      // Duration will be set after config is loaded
+      this._blockSliderHideOthers = _.debounce(this._blockSliderHideOthers.bind(this), 200);
 
     },
 
@@ -129,7 +131,7 @@ const BlockSliderView = {
 
     _blockSliderConfigureControls(animate) {
 
-      const duration = this.model.get('_articleBlockSlider')._slideAnimationDuration || 200;
+      const duration = this._blockSliderConfig._slideAnimationDuration || 200;
 
       if (this._disableAnimationOnce) animate = false;
       const _currentBlock = this.model.get('_currentBlock');
@@ -176,7 +178,7 @@ const BlockSliderView = {
 
       this._onBlockSliderDeviceChanged();
 
-      const startIndex = this.model.get('_articleBlockSlider')._startIndex || 0;
+      const startIndex = this._blockSliderConfig._startIndex || 0;
 
       this._blockSliderMoveIndex(startIndex, false);
 
@@ -311,7 +313,7 @@ const BlockSliderView = {
         this._blockSliderConfigureControls(animate);
       }
 
-      const duration = this.model.get('_articleBlockSlider')._slideAnimationDuration || 200;
+      const duration = this._blockSliderConfig._slideAnimationDuration || 200;
 
       if (this._disableAnimationOnce) animate = false;
 
@@ -350,7 +352,7 @@ const BlockSliderView = {
 
       this._blockSliderShowAll();
 
-      const duration = this.model.get('_articleBlockSlider')._slideAnimationDuration || 200;
+      const duration = this._blockSliderConfig._slideAnimationDuration || 200;
 
       if (this._disableAnimationOnce) animate = false;
 
@@ -369,7 +371,7 @@ const BlockSliderView = {
     },
 
     _blockSliderIsEnabledOnScreenSizes() {
-      const isEnabledOnScreenSizes = this.model.get('_articleBlockSlider')._isEnabledOnScreenSizes;
+      const isEnabledOnScreenSizes = this._blockSliderConfig._isEnabledOnScreenSizes;
 
       const sizes = isEnabledOnScreenSizes.split(' ');
       if (sizes.indexOf(device.screenSize) > -1) {
@@ -429,11 +431,11 @@ const BlockSliderView = {
         }
       });
 
-      const duration = (this.model.get('_articleBlockSlider')._heightAnimationDuration || 200) * 2;
+      const duration = (this._blockSliderConfig._heightAnimationDuration || 200) * 2;
 
       if (this._disableAnimationOnce) animate = false;
 
-      if (this.model.get('_articleBlockSlider')._hasUniformHeight) {
+      if (this._blockSliderConfig._hasUniformHeight) {
         if (animate === false) {
           $container.css({'height': maxHeight+'px', 'transition': 'none'});
         } else {
@@ -457,7 +459,7 @@ const BlockSliderView = {
 
       }
 
-      const minHeight = this.model.get('_articleBlockSlider')._minHeight;
+      const minHeight = this._blockSliderConfig._minHeight;
       if (minHeight) {
         $container.css({'min-height': minHeight+'px'});
       }
@@ -465,7 +467,7 @@ const BlockSliderView = {
     },
 
     _blockSliderResizeTab() {
-      if (!this.model.get('_articleBlockSlider')._hasTabs) return;
+      if (!this._blockSliderConfig._hasTabs) return;
 
       this._blockSliderSetButtonLayout();
 

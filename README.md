@@ -18,7 +18,32 @@ Git clone the component, making sure to delete the hidden **.git** folder from t
 
 ## Settings  
 
-The attributes listed below are used in *articles.json* to configure **Article Block Slider**, and are properly formatted as JSON in [*example.json*](https://github.com/cgkineo/adapt-articleBlockSlider/blob/master/example.json).
+The **Article Block Slider** can be configured at two levels:
+
+### Course-Level Configuration (Extensions Panel)
+
+Configure global settings in the **Extensions** panel of the Adapt Authoring Tool. These settings appear under "Article Block Slider" and provide default values for all articles in the course.
+
+**course.json:**
+```json
+"_articleBlockSlider": {
+  "_isEnabled": true,
+  "_defaults": {
+    "_slideAnimationDuration": 600,
+    "_heightAnimationDuration": 300,
+    "_isEnabledOnScreenSizes": "large medium",
+    "_hasArrows": true,
+    "_hasTabs": false,
+    "_hasUniformHeight": true,
+    "_enableTouchSwipe": true,
+    "_swipeSensitivity": 50
+  }
+}
+```
+
+### Article-Level Configuration
+
+Configure settings per article in *articles.json*. Article settings override course-level defaults. The attributes are properly formatted as JSON in [*example.json*](https://github.com/cgkineo/adapt-articleBlockSlider/blob/master/example.json).
 
 **_articleBlockSlider** (object): The Article Block Slider object that contains values for **_isEnabled**, **_isDisabledWhenAccessibilityActive**, **_slideAnimationDuration**, **_heightAnimationDuration**, **_isEnabledOnScreenSizes**, **_hasTabs**, **_hasArrows**, **_startIndex**, **_hasUniformHeight**, and **_minHeight**.
 
