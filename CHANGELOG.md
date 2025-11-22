@@ -5,6 +5,22 @@ All notable changes to the Article Block Slider extension will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.3.1] - 2025-01-22
+
+### Changed
+- **BREAKING**: `_isEnabled` now defaults to `false` instead of `true`
+  - **Why**: The plugin was enabling itself on every article by default, which was unexpected behavior
+  - **Impact**: Existing courses will need to explicitly enable the slider on articles where it's desired
+  - **Benefit**: Opt-in approach prevents unintended activation and gives authors full control
+- Updated documentation to clarify that the slider is disabled by default
+- Added help text to `_isEnabled` property in schema
+
+### Migration Guide
+If you were relying on the slider being enabled by default:
+1. Edit each article where you want the slider active
+2. Expand the "Article Block Slider" section
+3. Check the "Enabled" checkbox (or set `_isEnabled: true` in JSON)
+
 ## [4.3.0] - 2025-01-22
 
 ### Added

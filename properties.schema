@@ -25,10 +25,11 @@
               "properties": {
                 "_isEnabled": {
                   "type": "boolean",
-                  "default": true,
+                  "default": false,
                   "title": "Enabled",
                   "inputType": "Checkbox",
-                  "validators": []
+                  "validators": [],
+                  "help": "Enable the Article Block Slider for this article. When disabled, blocks will display in standard vertical layout."
                 },
                 "_isDisabledWhenAccessibilityActive": {
                   "type": "boolean",

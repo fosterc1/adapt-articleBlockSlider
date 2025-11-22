@@ -103,6 +103,8 @@ rm -rf adapt-articleBlockSlider/.git
 
 ## Configuration
 
+> **⚠️ Important**: The Article Block Slider is **disabled by default**. You must explicitly enable it for each article where you want to use it by setting `_isEnabled: true` in the article's configuration.
+
 ### Settings Overview
 
 Configure the Article Block Slider at the article level. In the Adapt Authoring Tool, you'll find an expandable **"Article Block Slider"** section when editing any article.
@@ -111,7 +113,7 @@ Configure the Article Block Slider at the article level. In the Adapt Authoring 
 
 | Setting | Type | Default | Description |
 |---------|------|---------|-------------|
-| `_isEnabled` | Boolean | `true` | Enable/disable the slider for this article |
+| `_isEnabled` | Boolean | `false` | Enable/disable the slider for this article. **Must be set to `true` to activate the slider.** |
 | `_isDisabledWhenAccessibilityActive` | Boolean | `false` | Disable slider when accessibility mode is active |
 
 #### Animation Settings
