@@ -36,6 +36,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - No functionality lost - `_onBlockSliderDeviceChanged()` handles all screen size changes
 - Eliminates timing conflicts and duplicate processing
 
+## [4.3.6] - 2025-11-24
+
+### Fixed
+- **CRITICAL: Removed native orientationchange listener entirely**
+  - Eliminated `_onOrientationChange()` method completely
+  - Removed `window.screen.orientation.addEventListener('change')` listener
+  - Removed fallback `$(window).on('orientationchange')` listener
+  - **Root Cause:** Native listener was duplicating Adapt's `device:changed` handling
+  - **Result:** Page refreshes AFTER navigating to BlockSlider articles are eliminated
+  
+### Why This Fix
+- Adapt Framework already fires `device:changed` on orientation changes
+- Native `orientationchange` listener was redundant and caused duplicate processing
+- `device:changed` handler already calls resize methods - no separate listener needed
+- This was causing "page refresh on orientation" ONLY after BlockSlider was initialized
+
+### Technical Details
+- Removed all orientation-specific event handling
+- Rely 100% on Adapt's `device:changed` event for orientation changes
+- `device:resize` and `device:changed` events handle all necessary updates
+- Simpler, cleaner code with zero conflicts
+
 ## [4.3.5] - 2025-11-24
 
 ### Fixed
