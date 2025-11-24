@@ -5,6 +5,26 @@ All notable changes to the Article Block Slider extension will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.3.5] - 2025-11-24
+
+### Fixed
+- **CRITICAL: Removed window resize triggers entirely** to prevent plugin interaction issues
+  - Eliminated `_triggerWindowResize()` method completely
+  - Removed window resize trigger from `_onOrientationChange()`
+  - Removed window resize trigger from `_onBlockSliderDeviceChanged()`
+  - Fixed page refresh issue caused by interaction with `adapt-backgroundvideo`
+  
+### Root Cause
+- v4.3.4's debounced window resize (800ms after orientation) conflicted with `adapt-backgroundvideo`'s re-render (300ms)
+- This caused **two separate re-renders**: BackgroundVideo at 300ms + window resize at 800ms = page refresh appearance
+- Solution: Rely entirely on Adapt Framework's `device:changed` event - no manual window resize triggers needed
+
+### Technical Details
+- Components should respond to `device:changed` event, not `window.resize`
+- Removed all manual resize triggers - Adapt Framework handles this automatically
+- Timing conflict eliminated: only one re-render cycle per orientation change
+- Tested with both `adapt-article-blockslider` and `adapt-backgroundvideo` active
+
 ## [4.3.4] - 2025-11-24
 
 ### Fixed

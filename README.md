@@ -2,7 +2,7 @@
 
 [![Adapt Framework Version](https://img.shields.io/badge/adapt%20framework-v5.53.5+-blue.svg)](https://github.com/adaptlearning/adapt_framework)
 [![License](https://img.shields.io/badge/license-GPL--3.0-green.svg)](https://github.com/fosterc1/adapt-articleBlockSlider/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/version-4.3.4-orange.svg)](https://github.com/fosterc1/adapt-articleBlockSlider/releases)
+[![Version](https://img.shields.io/badge/version-4.3.5-orange.svg)](https://github.com/fosterc1/adapt-articleBlockSlider/releases)
 [![Accessibility](https://img.shields.io/badge/accessibility-WCAG%202.1%20AA-brightgreen.svg)](#accessibility-compliance)
 [![RTL Support](https://img.shields.io/badge/RTL-supported-success.svg)](#internationalization)
 [![Touch Enabled](https://img.shields.io/badge/touch-enabled-success.svg)](#touch--swipe-support)
