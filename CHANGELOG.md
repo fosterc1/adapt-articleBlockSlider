@@ -5,6 +5,30 @@ All notable changes to the Article Block Slider extension will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [4.3.3] - 2025-11-24
+
+### Fixed
+- **Console Errors**: Fixed uncaught exceptions in resize handlers that were cluttering console logs
+  - Added comprehensive try-catch error handling to all resize methods
+  - Added error logging with context for easier debugging
+  - Wrapped `_onBlockSliderResize()` in try-catch block
+  - Wrapped `_blockSliderResizeHeight()` in try-catch block
+  - Wrapped `_blockSliderResizeWidth()` in try-catch block
+  - Wrapped `_blockSliderResizeTab()` in try-catch block
+  - Enhanced `_onOrientationChange()` with nested try-catch blocks for each step
+
+- **Performance**: Improved touch event performance on mobile devices
+  - Added passive event listeners for `touchstart` events (improves scroll performance)
+  - Kept `touchmove` as non-passive (required for preventDefault)
+  - Override `delegateEvents()` to properly attach native event listeners with passive flag
+  - Eliminates browser warnings about scroll-blocking touch events
+
+### Technical Details
+- All resize operations now fail gracefully with descriptive error messages
+- Console errors include method names for easy identification
+- Touch events use native `addEventListener` with proper `{passive}` options
+- Maintains backward compatibility - no breaking changes
+
 ## [4.3.2] - 2025-01-24
 
 ### Fixed

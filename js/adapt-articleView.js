@@ -92,6 +92,26 @@ const BlockSliderView = {
 
     },
 
+    // Override delegateEvents to add passive flag to touch events
+    delegateEvents(events) {
+      AdaptArticleView.prototype.delegateEvents.call(this, events);
+      
+      // Re-attach touch events with passive flag for better performance
+      const $container = this.$('.js-abs-slide-container');
+      if ($container.length) {
+        const elem = $container[0];
+        
+        // Remove jQuery-bound touch events
+        $container.off('touchstart touchmove');
+        
+        // Add native event listeners with passive flag
+        if (elem) {
+          elem.addEventListener('touchstart', this._onTouchStart.bind(this), { passive: true });
+          elem.addEventListener('touchmove', this._onTouchMove.bind(this), { passive: false }); // false because we preventDefault
+        }
+      }
+    },
+
     _blockSliderRender() {
       Adapt.trigger(this.constructor.type + 'View:preRender view:render', this);
 
@@ -410,42 +430,63 @@ const BlockSliderView = {
     },
 
     _onBlockSliderResize() {
-      this._blockSliderResizeWidth(false);
-      this._blockSliderResizeHeight(false);
-      this._blockSliderScrollToCurrent(false);
-      this._blockSliderResizeTab();
+      try {
+        this._blockSliderResizeWidth(false);
+        this._blockSliderResizeHeight(false);
+        this._blockSliderScrollToCurrent(false);
+        this._blockSliderResizeTab();
+      } catch (error) {
+        console.error('BlockSlider: Error in _onBlockSliderResize:', error);
+      }
     },
 
     _onOrientationChange() {
       // On orientation change, we need to delay slightly to allow the browser
       // to complete the orientation change and recalculate dimensions
-      _.delay(() => {
-        // Force a full recalculation of all dimensions
-        this._blockSliderResizeWidth(false);
-        _.defer(() => {
-          // Height calculation needs the width to be set first
-          this._blockSliderResizeHeight(false);
-          _.defer(() => {
-            // Scroll positioning needs both width and height
-            this._blockSliderScrollToCurrent(false);
-            this._blockSliderResizeTab();
-            // Trigger a final window resize to ensure all components update
-            $(window).trigger('resize');
-          });
-        });
-      }, 300); // 300ms delay to ensure orientation change is complete
+      try {
+        _.delay(() => {
+          try {
+            // Force a full recalculation of all dimensions
+            this._blockSliderResizeWidth(false);
+            _.defer(() => {
+              try {
+                // Height calculation needs the width to be set first
+                this._blockSliderResizeHeight(false);
+                _.defer(() => {
+                  try {
+                    // Scroll positioning needs both width and height
+                    this._blockSliderScrollToCurrent(false);
+                    this._blockSliderResizeTab();
+                    // Trigger a final window resize to ensure all components update
+                    $(window).trigger('resize');
+                  } catch (error) {
+                    console.error('BlockSlider: Error in orientation change (scroll/tab resize):', error);
+                  }
+                });
+              } catch (error) {
+                console.error('BlockSlider: Error in orientation change (height resize):', error);
+              }
+            });
+          } catch (error) {
+            console.error('BlockSlider: Error in orientation change (width resize):', error);
+          }
+        }, 300); // 300ms delay to ensure orientation change is complete
+      } catch (error) {
+        console.error('BlockSlider: Error in _onOrientationChange:', error);
+      }
     },
 
     _blockSliderResizeHeight(animate) {
-      if (!this._isReady) animate = false;
-      const $container = this.$el.find('.js-abs-slide-container');
-      const isEnabled = this._blockSliderIsEnabledOnScreenSizes();
+      try {
+        if (!this._isReady) animate = false;
+        const $container = this.$el.find('.js-abs-slide-container');
+        const isEnabled = this._blockSliderIsEnabledOnScreenSizes();
 
-      if (!isEnabled) {
-        this._blockSliderShowAll();
-        // Use CSS transitions instead of velocity
-        return $container.css({'height': '', 'min-height': ''});
-      }
+        if (!isEnabled) {
+          this._blockSliderShowAll();
+          // Use CSS transitions instead of velocity
+          return $container.css({'height': '', 'min-height': ''});
+        }
 
       const currentBlock = this.model.get('_currentBlock');
       const $blocks = this.$el.find('.block');
@@ -488,65 +529,74 @@ const BlockSliderView = {
 
       }
 
-      const minHeight = this._blockSliderConfig._minHeight;
-      if (minHeight) {
-        $container.css({'min-height': minHeight+'px'});
+        const minHeight = this._blockSliderConfig._minHeight;
+        if (minHeight) {
+          $container.css({'min-height': minHeight+'px'});
+        }
+      } catch (error) {
+        console.error('BlockSlider: Error in _blockSliderResizeHeight:', error);
       }
-
     },
 
     _blockSliderResizeTab() {
-      if (!this._blockSliderConfig._hasTabs) return;
+      try {
+        if (!this._blockSliderConfig._hasTabs) return;
 
-      this._blockSliderSetButtonLayout();
+        this._blockSliderSetButtonLayout();
 
-      this.$('.js-abs-btn-tab').css({
-        height: ""
-      });
+        this.$('.js-abs-btn-tab').css({
+          height: ""
+        });
 
-      const parentHeight = this.$('.js-abs-btn-tab').parent().height();
-      this.$('.js-abs-btn-tab').css({
-        height: parentHeight + 'px'
-      });
+        const parentHeight = this.$('.js-abs-btn-tab').parent().height();
+        this.$('.js-abs-btn-tab').css({
+          height: parentHeight + 'px'
+        });
 
-      const toolbarHeight = this.$('.js-abs-btn-tab-container').height();
-      const additionalMargin = '30';
-      this.$('.js-abs-btn-tab-container').css({
-        top: '-' + (toolbarHeight + (additionalMargin/2)) + 'px'
-      });
+        const toolbarHeight = this.$('.js-abs-btn-tab-container').height();
+        const additionalMargin = '30';
+        this.$('.js-abs-btn-tab-container').css({
+          top: '-' + (toolbarHeight + (additionalMargin/2)) + 'px'
+        });
 
-      const toolbarMargin = parseFloat(toolbarHeight) + parseFloat(additionalMargin);
-      this.$('.js-abs-slide-container').css({
-        marginTop: toolbarMargin + 'px'
-      });
+        const toolbarMargin = parseFloat(toolbarHeight) + parseFloat(additionalMargin);
+        this.$('.js-abs-slide-container').css({
+          marginTop: toolbarMargin + 'px'
+        });
+      } catch (error) {
+        console.error('BlockSlider: Error in _blockSliderResizeTab:', error);
+      }
     },
 
     _blockSliderResizeWidth() {
-      const isEnabled = this._blockSliderIsEnabledOnScreenSizes();
-      const $blockContainer = this.$el.find('.js-abs-block-container');
-      const $blocks = this.$el.find('.block');
+      try {
+        const isEnabled = this._blockSliderIsEnabledOnScreenSizes();
+        const $blockContainer = this.$el.find('.js-abs-block-container');
+        const $blocks = this.$el.find('.block');
 
-      if (!isEnabled) {
-        $blocks.css('width', '');
-        return $blockContainer.css({'width': '100%'});
+        if (!isEnabled) {
+          $blocks.css('width', '');
+          return $blockContainer.css({'width': '100%'});
+        }
+
+        const $container = this.$el.find('.js-abs-slide-container');
+
+        // Force a reflow to ensure we get accurate measurements after orientation change
+        $container[0].offsetHeight; // Trigger reflow
+        
+        const containerWidth = $container.width();
+        $blocks.css('width', containerWidth + 'px');
+
+        // Force another reflow after setting block widths
+        $blocks[0].offsetHeight; // Trigger reflow
+        
+        const blockWidth = $($blocks[0]).outerWidth();
+        const totalWidth = $blocks.length * blockWidth;
+
+        $blockContainer.width(totalWidth + 'px');
+      } catch (error) {
+        console.error('BlockSlider: Error in _blockSliderResizeWidth:', error);
       }
-
-      const $container = this.$el.find('.js-abs-slide-container');
-
-      // Force a reflow to ensure we get accurate measurements after orientation change
-      $container[0].offsetHeight; // Trigger reflow
-      
-      const containerWidth = $container.width();
-      $blocks.css('width', containerWidth + 'px');
-
-      // Force another reflow after setting block widths
-      $blocks[0].offsetHeight; // Trigger reflow
-      
-      const blockWidth = $($blocks[0]).outerWidth();
-      const totalWidth = $blocks.length * blockWidth;
-
-      $blockContainer.width(totalWidth + 'px');
-
     },
 
     _onBlockSliderDeviceChanged() {
