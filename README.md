@@ -2,11 +2,13 @@
 
 [![Adapt Framework Version](https://img.shields.io/badge/adapt%20framework-v5.53.5+-blue.svg)](https://github.com/adaptlearning/adapt_framework)
 [![License](https://img.shields.io/badge/license-GPL--3.0-green.svg)](https://github.com/fosterc1/adapt-articleBlockSlider/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/version-4.3.0-orange.svg)](https://github.com/fosterc1/adapt-articleBlockSlider/releases)
+[![Version](https://img.shields.io/badge/version-4.3.2-orange.svg)](https://github.com/fosterc1/adapt-articleBlockSlider/releases)
 [![Accessibility](https://img.shields.io/badge/accessibility-WCAG%202.1%20AA-brightgreen.svg)](#accessibility-compliance)
 [![RTL Support](https://img.shields.io/badge/RTL-supported-success.svg)](#internationalization)
 [![Touch Enabled](https://img.shields.io/badge/touch-enabled-success.svg)](#touch--swipe-support)
 [![Maintained](https://img.shields.io/badge/maintained-yes-success.svg)](https://github.com/fosterc1/adapt-articleBlockSlider)
+[![Downloads](https://img.shields.io/github/downloads/fosterc1/adapt-article-blockslider/total.svg)](https://github.com/fosterc1/adapt-article-blockslider/releases)
+[![Stars](https://img.shields.io/github/stars/fosterc1/adapt-article-blockslider.svg)](https://github.com/fosterc1/adapt-article-blockslider/stargazers)
 
 > A professional presentation extension for the Adapt Learning Framework that transforms vertically stacked article blocks into an elegant horizontal slider with navigation controls and touch support.
 
@@ -927,17 +929,18 @@ Enable debug mode in `config.json`:
 
 See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
-### Current Version: 4.2.2
+### Current Version: 4.3.2
 
 **Latest Changes:**
-- Production-ready release for AAT deployment
-- Article-level expandable section configuration
-- Comprehensive documentation
+- **4.3.2**: Fixed orientation change handling on touch devices (background/container resize)
+- **4.3.1**: Changed `_isEnabled` default to false (opt-in behavior) - BREAKING CHANGE
+- **4.3.0**: Stable release with comprehensive documentation and production-ready status
 - Full WCAG 2.1 AA compliance
-- Touch/swipe support for mobile devices
+- Touch/swipe support with improved orientation handling
 - Modern ES6 codebase for Adapt v5.53.5+
 
 **Previous Versions:**
+- **4.2.2**: Production-ready release for AAT deployment
 - **4.2.1**: Fixed schema structure
 - **4.2.0**: Course-level configuration (superseded)
 - **4.1.0**: Touch/swipe navigation added
