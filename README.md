@@ -2,7 +2,7 @@
 
 [![Adapt Framework Version](https://img.shields.io/badge/adapt%20framework-v5.53.5+-blue.svg)](https://github.com/adaptlearning/adapt_framework)
 [![License](https://img.shields.io/badge/license-GPL--3.0-green.svg)](https://github.com/fosterc1/adapt-articleBlockSlider/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/version-4.3.7-orange.svg)](https://github.com/fosterc1/adapt-articleBlockSlider/releases)
+[![Version](https://img.shields.io/badge/version-4.3.8-orange.svg)](https://github.com/fosterc1/adapt-articleBlockSlider/releases)
 [![Accessibility](https://img.shields.io/badge/accessibility-WCAG%202.1%20AA-brightgreen.svg)](#accessibility-compliance)
 [![RTL Support](https://img.shields.io/badge/RTL-supported-success.svg)](#internationalization)
 [![Touch Enabled](https://img.shields.io/badge/touch-enabled-success.svg)](#touch--swipe-support)
@@ -929,9 +929,10 @@ Enable debug mode in `config.json`:
 
 See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
-### Current Version: 4.3.7
+### Current Version: 4.3.8
 
 **Latest Changes:**
+- **4.3.8**: Fixed critical TypeError and text not displaying (v4.3.7 hotfix)
 - **4.3.7**: Fixed intermittent button behavior on touch devices - improved tap vs swipe detection
 - **4.3.6**: Removed native orientationchange listener to prevent duplicate processing
 - **4.3.5**: Eliminated window resize triggers to prevent plugin interaction issues

@@ -5,7 +5,36 @@ All notable changes to the Article Block Slider extension will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.3.7] - 2025-11-25
+## [4.3.8] - 2025-11-25
+
+### Fixed
+- **CRITICAL HOTFIX: v4.3.7 was completely broken**
+  - Fixed "Uncaught TypeError: n.apply is not a function" that broke the entire plugin
+  - Fixed text not displaying in compiled courses
+  - Fixed plugin being unusable in Adapt Authoring Tool
+  
+### Root Cause (v4.3.7 Bug)
+- The `delegateEvents()` override introduced in v4.3.7 was fundamentally incompatible with Backbone
+- Manual attachment of native event listeners with `.bind(this)` broke Backbone's event system
+- This caused ALL event handlers to fail, making the plugin completely non-functional
+
+### Solution
+- Removed the `delegateEvents()` override entirely
+- All events now handled through Backbone's standard event delegation (events object)
+- Touch improvements from v4.3.7 remain functional through jQuery event system
+- Button touch handlers still work: touchstart/touchmove/touchend tracking for tap vs swipe detection
+
+### Status
+- ✅ Plugin now works correctly in AAT
+- ✅ Text displays properly in compiled courses
+- ✅ No console errors
+- ✅ Touch button improvements still active and functional
+- ✅ All previous v4.3.7 improvements preserved (minus the broken implementation)
+
+### Apology
+This hotfix addresses a critical regression introduced in v4.3.7. The plugin should have been tested more thoroughly before release. Version 4.3.8 restores full functionality while maintaining the touch improvements.
+
+## [4.3.7] - 2025-11-25 **[BROKEN - DO NOT USE]**
 
 ### Fixed
 - **CRITICAL: Fixed TypeError crash and text not displaying**
