@@ -2,7 +2,7 @@
 
 [![Adapt Framework Version](https://img.shields.io/badge/adapt%20framework-v5.53.5+-blue.svg)](https://github.com/adaptlearning/adapt_framework)
 [![License](https://img.shields.io/badge/license-GPL--3.0-green.svg)](https://github.com/fosterc1/adapt-articleBlockSlider/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/version-4.3.9-orange.svg)](https://github.com/fosterc1/adapt-articleBlockSlider/releases)
+[![Version](https://img.shields.io/badge/version-4.3.10-orange.svg)](https://github.com/fosterc1/adapt-articleBlockSlider/releases)
 [![Accessibility](https://img.shields.io/badge/accessibility-WCAG%202.1%20AA-brightgreen.svg)](#accessibility-compliance)
 [![RTL Support](https://img.shields.io/badge/RTL-supported-success.svg)](#internationalization)
 [![Touch Enabled](https://img.shields.io/badge/touch-enabled-success.svg)](#touch--swipe-support)
@@ -931,7 +931,7 @@ See [CHANGELOG.md](CHANGELOG.md) for detailed version history.
 
 ### 🚀 Release Notes
 
-**Latest Stable Release: v4.3.9** (2025-11-25)
+**Latest Stable Release: v4.3.10** (2025-11-25)
 
 This is a **critical hotfix release** that resolves complete plugin breakage introduced in v4.3.7. All users should upgrade to v4.3.8 immediately.
 
@@ -940,17 +940,22 @@ This is a **critical hotfix release** that resolves complete plugin breakage int
 - ⛔ **v4.3.7**: Completely broken - causes TypeError and text not displaying
 - ✅ **v4.3.6 and earlier**: Stable, but missing touch button improvements
 
-**Download:** [Get v4.3.9 from Releases](https://github.com/fosterc1/adapt-articleBlockSlider/releases/tag/v4.3.9)
+**Download:** [Get v4.3.10 from Releases](https://github.com/fosterc1/adapt-articleBlockSlider/releases/tag/v4.3.10)
 
 ---
 
-### Current Version: 4.3.9 (Stable Release)
+### Current Version: 4.3.10 (Stable Release)
 
-> ⚠️ **Important**: Versions 4.3.7 and 4.3.8 had critical bugs. Please use v4.3.9 or later.
+> ⚠️ **Important**: Versions 4.3.7, 4.3.8, and 4.3.9 had bugs. Please use v4.3.10.
 
-**What's New in 4.3.9:**
-- **CRITICAL FIX**: Fixed debounce implementation causing "n.apply is not a function" error
-- Debounce now applied correctly without binding issues
+**What's New in 4.3.10:**
+- **CRITICAL FIX**: Removed complex touch button handlers that broke all button functionality
+- Buttons now work reliably on both desktop and mobile devices
+- Simplified to use standard click events which work universally
+- Swipe gestures still functional
+
+**What Was in 4.3.9:**
+- Fixed debounce implementation (but broke buttons with touch handlers)
 
 **What Was in 4.3.8:**
 - **CRITICAL HOTFIX**: Fixed complete plugin breakage from v4.3.7
@@ -964,9 +969,10 @@ This is a **critical hotfix release** that resolves complete plugin breakage int
   - Touch gestures on content area work normally
 
 **Recent Version History:**
-- **4.3.9** (2025-11-25): Fixed debounce implementation causing TypeError
+- **4.3.10** (2025-11-25): Fixed buttons not working - removed touch handlers, use simple click events
+- **4.3.9** (2025-11-25): ⛔ **BROKE BUTTONS** - Touch handlers prevented clicks
 - **4.3.8** (2025-11-25): ⚠️ **HAD BUGS** - Partial fix, debounce issue remained
-- **4.3.7** (2025-11-25): ⛔ **BROKEN - DO NOT USE** - Introduced critical bug
+- **4.3.7** (2025-11-25): ⛔ **BROKEN** - Introduced critical bug
 - **4.3.6** (2025-11-24): Removed native orientationchange listener to prevent duplicate processing
 - **4.3.5** (2025-11-24): Eliminated window resize triggers to prevent plugin interaction issues
 - **4.3.4** (2025-11-24): Added debounced resize triggers for better orientation change performance

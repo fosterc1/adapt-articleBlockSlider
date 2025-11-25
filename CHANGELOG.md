@@ -5,7 +5,38 @@ All notable changes to the Article Block Slider extension will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.3.9] - 2025-11-25
+## [4.3.10] - 2025-11-25
+
+### Fixed
+- **CRITICAL: Restored button functionality**
+  - Removed complex touch button handlers that completely broke button clicks
+  - Buttons now work reliably on both desktop and mobile devices
+  - Reverted to simple, standard click event handlers
+  
+### Root Cause (v4.3.9 Bug)
+- Added dedicated touchstart/touchmove/touchend handlers for buttons
+- These handlers called `event.preventDefault()` which blocked click events
+- Result: Buttons stopped working entirely on all devices
+
+### Solution
+- Removed all button-specific touch event handlers
+- Rely solely on standard 'click' event which works universally:
+  - Desktop: Mouse clicks work
+  - Touch devices: Taps trigger click events naturally
+  - No need for complex touch detection
+  
+### What's Retained
+- ✅ Swipe gestures on slide container still work
+- ✅ Debounce fix from v4.3.9 still in place
+- ✅ All previous stability fixes intact
+
+### Status
+- ✅ Buttons work on desktop (mouse)
+- ✅ Buttons work on mobile/tablet (tap)
+- ✅ Swipe gestures work for navigation
+- ✅ No TypeError in console
+
+## [4.3.9] - 2025-11-25 **[BROKE BUTTONS - DO NOT USE]**
 
 ### Fixed
 - **CRITICAL: Fixed debounce implementation causing TypeError**
