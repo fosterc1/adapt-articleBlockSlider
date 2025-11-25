@@ -5,7 +5,31 @@ All notable changes to the Article Block Slider extension will be documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [4.3.8] - 2025-11-25
+## [4.3.9] - 2025-11-25
+
+### Fixed
+- **CRITICAL: Fixed debounce implementation causing TypeError**
+  - Resolved remaining "n.apply is not a function" error in `_blockSliderSetupEventListeners`
+  - Was applying debounce to an already-bound function which broke the function reference
+  - Now applies debounce to the original function, which handles context automatically
+  
+### Root Cause
+- Line 78 had `_.debounce(this._blockSliderHideOthers.bind(this), 200)`
+- Binding a function and then debouncing it causes the debounced function to lose its apply method
+- Underscore's debounce expects the original function and handles context properly
+
+### Solution
+- Store reference to original function: `const originalHideOthers = this._blockSliderHideOthers`
+- Apply debounce to original: `this._blockSliderHideOthers = _.debounce(originalHideOthers, 200)`
+- Debounce now works correctly and the TypeError is completely eliminated
+
+### Status
+- ✅ All TypeErrors resolved
+- ✅ Touch button improvements functional
+- ✅ Plugin works correctly in AAT
+- ✅ Tested on mobile devices
+
+## [4.3.8] - 2025-11-25 **[HAD REMAINING BUG]**
 
 ### Fixed
 - **CRITICAL HOTFIX: v4.3.7 was completely broken**
