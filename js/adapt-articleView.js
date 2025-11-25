@@ -74,8 +74,9 @@ const BlockSliderView = {
       this.listenToOnce(Adapt, 'remove', this._onBlockSliderRemove);
       this.listenToOnce(this.model, 'change:_isReady', this._onBlockSliderReady);
 
-      // Duration will be set after config is loaded
-      this._blockSliderHideOthers = _.debounce(this._blockSliderHideOthers.bind(this), 200);
+      // Create debounced version - debounce handles context automatically
+      const originalHideOthers = this._blockSliderHideOthers;
+      this._blockSliderHideOthers = _.debounce(originalHideOthers, 200);
 
       // Removed native orientationchange listener - Adapt's device:changed event handles this
 
